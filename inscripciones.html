@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JP University — Inscripciones</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root{--navy:#0d1b3e;--navy-mid:#132248;--navy-light:#1a2e5e;--gold:#c9a84c;--gold-light:#e2c170;--gold-pale:#f5e9c8;--cream:#f7f4ee;--white:#ffffff;--text-dark:#1c1c2e;--text-mid:#4a4a6a;--text-soft:#8888aa;--success:#2ecc8f;--danger:#e05c6e;--info:#3fa7d6;--warning:#f0a500;--sidebar-w:270px;--topbar-h:64px;--radius:14px;--shadow:0 4px 24px rgba(13,27,62,.10);--shadow-lg:0 8px 40px rgba(13,27,62,.16);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-dark);display:flex;min-height:100vh;overflow-x:hidden;}
+  /* SIDEBAR */
+  #sidebar{width:var(--sidebar-w);background:var(--navy);min-height:100vh;position:fixed;top:0;left:0;z-index:100;box-shadow:4px 0 32px rgba(0,0,0,.25);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--navy-light) var(--navy);}
+  #sidebar::-webkit-scrollbar{width:4px;}#sidebar::-webkit-scrollbar-thumb{background:var(--navy-light);border-radius:4px;}
+  .sidebar-brand{padding:22px 20px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(201,168,76,.18);}
+  .brand-logo{width:42px;height:42px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:var(--navy);box-shadow:0 4px 12px rgba(201,168,76,.4);}
+  .brand-text{color:var(--white);}
+  .brand-text strong{display:block;font-family:'Playfair Display',serif;font-size:15px;font-weight:700;}
+  .brand-text span{font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.8px;text-transform:uppercase;}
+  .sidebar-user{padding:16px 20px;display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(255,255,255,.07);}
+  .user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#e8a830);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--navy);}
+  .user-info strong{display:block;font-size:13px;color:var(--white);font-weight:600;}
+  .user-info span{font-size:11px;color:rgba(255,255,255,.4);}
+  .nav-label{padding:18px 20px 6px;font-size:10px;text-transform:uppercase;letter-spacing:1.4px;color:rgba(201,168,76,.55);font-weight:600;}
+  .nav-link{display:flex;align-items:center;gap:11px;padding:10px 20px;color:rgba(255,255,255,.65);text-decoration:none;font-size:13.5px;font-weight:500;cursor:pointer;transition:all .2s;border-left:3px solid transparent;}
+  .nav-link:hover{color:var(--white);background:rgba(255,255,255,.06);border-left-color:rgba(201,168,76,.4);}
+  .nav-link.active{color:var(--gold-light);background:rgba(201,168,76,.12);border-left-color:var(--gold);}
+  .nav-link .icon{width:18px;text-align:center;font-size:14px;}
+  .nav-link .label{flex:1;}
+  .nav-link .arrow{font-size:10px;transition:transform .25s;}
+  .nav-link.open .arrow{transform:rotate(90deg);}
+  .nav-link .badge{background:var(--gold);color:var(--navy);font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;}
+  .submenu{overflow:hidden;max-height:0;transition:max-height .35s ease;background:rgba(0,0,0,.15);}
+  .submenu.open{max-height:400px;}
+  .submenu-link{display:flex;align-items:center;gap:9px;padding:8px 20px 8px 50px;color:rgba(255,255,255,.5);text-decoration:none;font-size:12.5px;cursor:pointer;transition:all .2s;}
+  .submenu-link::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(201,168,76,.4);flex-shrink:0;}
+  .submenu-link:hover,.submenu-link.active{color:var(--gold-light);}
+  .submenu-link.active::before,.submenu-link:hover::before{background:var(--gold);}
+  /* MAIN */
+  #main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;}
+  #topbar{height:var(--topbar-h);background:var(--white);display:flex;align-items:center;justify-content:space-between;padding:0 28px;box-shadow:0 2px 16px rgba(0,0,0,.07);position:sticky;top:0;z-index:50;}
+  .topbar-left{display:flex;align-items:center;gap:14px;}
+  .page-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);}
+  .breadcrumb{font-size:12px;color:var(--text-soft);}
+  .breadcrumb a{color:var(--text-soft);text-decoration:none;}
+  .breadcrumb a:hover{color:var(--gold);}
+  .breadcrumb span{color:var(--gold);font-weight:600;}
+  .topbar-right{display:flex;align-items:center;gap:10px;}
+  .tb-btn{width:38px;height:38px;background:var(--cream);border:none;border-radius:10px;color:var(--text-mid);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;position:relative;transition:all .2s;}
+  .tb-btn:hover{background:var(--gold-pale);}
+  .notif-dot{position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--danger);border:2px solid var(--white);}
+  .tb-profile{display:flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;background:var(--cream);border-radius:10px;cursor:pointer;}
+  .tb-profile .avatar{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--navy),var(--navy-light));display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--gold);}
+  .tb-profile span{font-size:13px;font-weight:600;color:var(--text-dark);}
+  /* CONTENT */
+  #content{padding:28px;flex:1;}
+  .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+  .page-header h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--navy);}
+  .page-header p{font-size:13px;color:var(--text-soft);margin-top:3px;}
+  .header-btns{display:flex;gap:10px;}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);border:none;border-radius:10px;padding:10px 20px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(201,168,76,.35);}
+  .btn-gold:hover{transform:translateY(-1px);}
+  .btn-outline-nav{background:var(--white);color:var(--text-mid);border:1px solid rgba(0,0,0,.1);border-radius:10px;padding:10px 16px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
+  .btn-outline-nav:hover{border-color:var(--gold);color:var(--navy);}
+  /* Summary mini-cards */
+  .summary-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+  .sum-card{background:var(--white);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;border-left:4px solid transparent;}
+  .sum-card.sc1{border-left-color:var(--info);}
+  .sum-card.sc2{border-left-color:var(--success);}
+  .sum-card.sc3{border-left-color:var(--warning);}
+  .sum-card.sc4{border-left-color:var(--danger);}
+  .sum-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;}
+  .sc1 .sum-icon{background:rgba(63,167,214,.12);color:var(--info);}
+  .sc2 .sum-icon{background:rgba(46,204,143,.12);color:var(--success);}
+  .sc3 .sum-icon{background:rgba(240,165,0,.12);color:var(--warning);}
+  .sc4 .sum-icon{background:rgba(224,92,110,.12);color:var(--danger);}
+  .sum-info h3{font-size:20px;font-weight:700;color:var(--text-dark);}
+  .sum-info p{font-size:11.5px;color:var(--text-soft);}
+  /* Filters */
+  .filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+  .search-wrap{position:relative;}
+  .search-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-soft);font-size:13px;}
+  .filter-bar input{background:var(--white);border:1px solid rgba(0,0,0,.08);border-radius:10px;padding:9px 14px 9px 36px;font-family:inherit;font-size:13px;color:var(--text-dark);outline:none;width:240px;}
+  .filter-bar input:focus{border-color:var(--gold);}
+  .filter-select{background:var(--white);border:1px solid rgba(0,0,0,.08);border-radius:10px;padding:9px 14px;font-family:inherit;font-size:13px;color:var(--text-mid);outline:none;cursor:pointer;}
+  .count-tag{margin-left:auto;font-size:12.5px;color:var(--text-soft);}
+  .count-tag strong{color:var(--navy);font-weight:700;}
+  /* Table card */
+  .table-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+  .table-wrap{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;}
+  thead th{text-align:left;padding:12px 16px;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-soft);font-weight:600;border-bottom:1px solid rgba(0,0,0,.07);white-space:nowrap;}
+  tbody tr{transition:background .15s;animation:fadeUp .3s ease both;}
+  tbody tr:hover{background:rgba(201,168,76,.04);}
+  tbody td{padding:13px 16px;font-size:13px;color:var(--text-dark);border-bottom:1px solid rgba(0,0,0,.04);}
+  .badge-pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+  .badge-success{background:rgba(46,204,143,.12);color:var(--success);}
+  .badge-warning{background:rgba(240,165,0,.12);color:var(--warning);}
+  .badge-info{background:rgba(63,167,214,.12);color:var(--info);}
+  .badge-danger{background:rgba(224,92,110,.12);color:var(--danger);}
+  .td-avatar{width:32px;height:32px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--white);margin-right:8px;vertical-align:middle;}
+  .action-btn{width:28px;height:28px;border-radius:7px;border:none;cursor:pointer;font-size:12px;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;margin-right:3px;}
+  .action-btn.edit{background:rgba(63,167,214,.1);color:var(--info);}
+  .action-btn.del{background:rgba(224,92,110,.1);color:var(--danger);}
+  .action-btn:hover{opacity:.8;transform:scale(1.1);}
+  /* Pagination */
+  .pagination{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid rgba(0,0,0,.06);}
+  .pagination span{font-size:12.5px;color:var(--text-soft);}
+  .pag-btns{display:flex;gap:6px;}
+  .pag-btn{width:32px;height:32px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:var(--white);cursor:pointer;font-size:12.5px;font-weight:600;color:var(--text-mid);transition:all .15s;}
+  .pag-btn:hover,.pag-btn.active{background:var(--navy);color:var(--white);border-color:var(--navy);}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  #footer{background:var(--white);border-top:1px solid rgba(0,0,0,.06);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-soft);}
+  #footer strong{color:var(--gold);}
+</style>
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">JP</div>
+    <div class="brand-text"><strong>JP University</strong><span>Academic Suite</span></div>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar">AM</div>
+    <div class="user-info"><strong>Admin Rector</strong><span>Administrador Central</span></div>
+  </div>
+  <nav>
+    <p class="nav-label">Principal</p>
+    <div class="nav-item"><a class="nav-link" href="jp_university_dashboard.html"><i class="icon fas fa-th-large"></i><span class="label">Dashboard</span></a></div>
+    <p class="nav-label">Académico</p>
+    <div class="nav-item">
+      <a class="nav-link" onclick="toggleMenu(this)"><i class="icon fas fa-graduation-cap"></i><span class="label">Gestión Académica</span><i class="arrow fas fa-chevron-right"></i></a>
+      <div class="submenu">
+        <a class="submenu-link" href="#">Planes de Estudio</a>
+        <a class="submenu-link" href="carreras.html">Programas y Carreras</a>
+        <a class="submenu-link" href="#">Pensum Académico</a>
+        <a class="submenu-link" href="#">Equivalencias</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a class="nav-link open active" onclick="toggleMenu(this)"><i class="icon fas fa-user-graduate"></i><span class="label">Estudiantes</span><span class="badge">18</span><i class="arrow fas fa-chevron-right" style="margin-left:4px"></i></a>
+      <div class="submenu open">
+        <a class="submenu-link active" href="inscripciones.html">Inscripciones</a>
+        <a class="submenu-link" href="#">Registro Académico</a>
+        <a class="submenu-link" href="#">Historial de Notas</a>
+        <a class="submenu-link" href="#">Becas y Descuentos</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a class="nav-link" onclick="toggleMenu(this)"><i class="icon fas fa-chalkboard-teacher"></i><span class="label">Docentes</span><i class="arrow fas fa-chevron-right"></i></a>
+      <div class="submenu">
+        <a class="submenu-link" href="docentes.html">Directorio Docente</a>
+        <a class="submenu-link" href="#">Asignación de Cursos</a>
+        <a class="submenu-link" href="#">Evaluación Docente</a>
+        <a class="submenu-link" href="#">Carga Académica</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a class="nav-link" onclick="toggleMenu(this)"><i class="icon fas fa-calendar-alt"></i><span class="label">Horarios y Aulas</span><i class="arrow fas fa-chevron-right"></i></a>
+      <div class="submenu">
+        <a class="submenu-link" href="#">Asignación de Aulas</a>
+        <a class="submenu-link" href="#">Calendario Académico</a>
+        <a class="submenu-link" href="#">Control de Asistencia</a>
+      </div>
+    </div>
+    <p class="nav-label">Administración</p>
+    <div class="nav-item">
+      <a class="nav-link" onclick="toggleMenu(this)"><i class="icon fas fa-file-invoice-dollar"></i><span class="label">Finanzas</span><i class="arrow fas fa-chevron-right"></i></a>
+      <div class="submenu">
+        <a class="submenu-link" href="#">Pagos y Aranceles</a>
+        <a class="submenu-link" href="#">Presupuesto Anual</a>
+        <a class="submenu-link" href="#">Cuentas por Cobrar</a>
+        <a class="submenu-link" href="#">Reportes Financieros</a>
+      </div>
+    </div>
+    <p class="nav-label">Sistema</p>
+    <div class="nav-item"><a class="nav-link" href="#"><i class="icon fas fa-cog"></i><span class="label">Configuración</span></a></div>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<div id="main">
+  <header id="topbar">
+    <div class="topbar-left">
+      <div class="page-title">Inscripciones</div>
+      <div class="breadcrumb">
+        <a href="jp_university_dashboard.html">Inicio</a> / Estudiantes / <span>Inscripciones</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="tb-btn"><i class="fas fa-bell"></i><span class="notif-dot"></span></button>
+      <div class="tb-profile">
+        <div class="avatar"><i class="fas fa-user-tie"></i></div>
+        <span>Rector</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="content">
+    <div class="page-header">
+      <div>
+        <h1>Gestión de Inscripciones</h1>
+        <p>Ciclo 2025-I · Período activo hasta el 30 de mayo de 2025</p>
+      </div>
+      <div class="header-btns">
+        <button class="btn-outline-nav"><i class="fas fa-download" style="margin-right:5px"></i>Exportar</button>
+        <button class="btn-gold"><i class="fas fa-plus" style="margin-right:6px"></i>Nueva Inscripción</button>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-row">
+      <div class="sum-card sc1"><div class="sum-icon"><i class="fas fa-list-alt"></i></div><div class="sum-info"><h3 id="tot">0</h3><p>Total Inscritos</p></div></div>
+      <div class="sum-card sc2"><div class="sum-icon"><i class="fas fa-check-circle"></i></div><div class="sum-info"><h3 id="act">0</h3><p>Activos</p></div></div>
+      <div class="sum-card sc3"><div class="sum-icon"><i class="fas fa-clock"></i></div><div class="sum-info"><h3 id="pen">0</h3><p>Pendientes</p></div></div>
+      <div class="sum-card sc4"><div class="sum-icon"><i class="fas fa-times-circle"></i></div><div class="sum-info"><h3 id="baj">0</h3><p>Dados de Baja</p></div></div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Buscar por nombre o carné..." id="searchI" oninput="renderTable()">
+      </div>
+      <select class="filter-select" id="facI" onchange="renderTable()">
+        <option value="">Todas las Facultades</option>
+        <option>Ingeniería</option><option>Ciencias Económicas</option>
+        <option>Ciencias Jurídicas</option><option>Ciencias de la Salud</option><option>Humanidades</option>
+      </select>
+      <select class="filter-select" id="statI" onchange="renderTable()">
+        <option value="">Todos los Estados</option>
+        <option>Activo</option><option>Pendiente</option><option>Beca</option><option>Baja</option>
+      </select>
+      <span class="count-tag">Mostrando <strong id="countI">0</strong> registros</span>
+    </div>
+
+    <div class="table-card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Carné</th><th>Estudiante</th><th>Carrera</th><th>Facultad</th>
+              <th>Ciclo</th><th>Fecha Inscripción</th><th>Estado</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tableI"></tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <span id="pagInfo"></span>
+        <div class="pag-btns" id="pagBtns"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer id="footer">
+    <span>© 2025 <strong>JP University</strong> — Gestión de Inscripciones</span>
+    <a href="jp_university_dashboard.html" style="color:var(--gold);font-weight:600;text-decoration:none;font-size:12px;"><i class="fas fa-arrow-left" style="margin-right:5px"></i>Volver al Dashboard</a>
+  </footer>
+</div>
+
+<script>
+function toggleMenu(el){
+  const sub=el.nextElementSibling;
+  const isOpen=sub.classList.contains('open');
+  document.querySelectorAll('.submenu').forEach(s=>s.classList.remove('open'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('open'));
+  if(!isOpen){sub.classList.add('open');el.classList.add('open');}
+}
+
+const avatarColors=['#3fa7d6','#2ecc8f','#c9a84c','#e05c6e','#9b59b6','#e67e22','#1abc9c'];
+const names=[
+  'Ana García','Carlos Mendez','Sofía Ruiz','Diego Torres','María López','Javier Mora','Valeria Nuñez',
+  'Luis Herrera','Camila Flores','Andrés Castillo','Isabela Vega','Roberto Soto','Gabriela Paz','Fernanda Cruz',
+  'Eduardo Reyes','Natalia Ramos','Sebastián Ávila','Diana Morales','Pablo León','Lucía Fuentes',
+  'Miguel Ortiz','Sandra Vargas','Álvaro Jiménez','Patricia Solís','Tomás Blanco','Daniela Ríos',
+  'Emilio Ponce','Verónica Lara','Cristian Mena','Alejandra Gil'
+];
+const carreras_=['Ingeniería en Sistemas','Ingeniería Industrial','Administración de Empresas','Derecho','Medicina y Cirugía','Contaduría Pública','Psicología','Comunicación Social','Enfermería','Mercadotecnia Digital'];
+const facMap={'Ingeniería en Sistemas':'Ingeniería','Ingeniería Industrial':'Ingeniería','Administración de Empresas':'Ciencias Económicas','Derecho':'Ciencias Jurídicas','Medicina y Cirugía':'Ciencias de la Salud','Contaduría Pública':'Ciencias Económicas','Psicología':'Humanidades','Comunicación Social':'Humanidades','Enfermería':'Ciencias de la Salud','Mercadotecnia Digital':'Ciencias Económicas'};
+const ciclos=['1ro','2do','3ro','4to','5to','6to'];
+const estados=['Activo','Activo','Activo','Activo','Pendiente','Pendiente','Beca','Baja'];
+const months=['Ene','Feb','Mar','Abr','May'];
+function rnd(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function randDate(){return `${Math.floor(Math.random()*28+1).toString().padStart(2,'0')} ${rnd(months)} 2025`;}
+
+const data=names.map((n,i)=>{
+  const car=carreras_[i%carreras_.length];
+  const st=estados[Math.floor(Math.random()*estados.length)];
+  return{id:`2025-0${(430+i).toString()}`,name:n,career:car,fac:facMap[car],ciclo:rnd(ciclos),date:randDate(),status:st,color:avatarColors[i%avatarColors.length]};
+});
+
+const PAGE=10;
+let currentPage=1;
+const statusClass={Activo:'badge-success',Pendiente:'badge-warning',Beca:'badge-info',Baja:'badge-danger'};
+
+function initials(n){return n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+
+function getFiltered(){
+  const q=document.getElementById('searchI').value.toLowerCase();
+  const fac=document.getElementById('facI').value;
+  const stat=document.getElementById('statI').value;
+  return data.filter(d=>{
+    return(!q||(d.name+d.id).toLowerCase().includes(q))&&(!fac||d.fac===fac)&&(!stat||d.status===stat);
+  });
+}
+
+function renderTable(){
+  const filtered=getFiltered();
+  const total=filtered.length;
+  const pages=Math.ceil(total/PAGE);
+  if(currentPage>pages)currentPage=1;
+  const start=(currentPage-1)*PAGE;
+  const slice=filtered.slice(start,start+PAGE);
+
+  const tbody=document.getElementById('tableI');
+  tbody.innerHTML='';
+  slice.forEach((r,i)=>{
+    tbody.innerHTML+=`
+      <tr style="animation-delay:${i*.04}s">
+        <td style="color:var(--text-soft);font-size:12px;font-weight:600">${r.id}</td>
+        <td><span class="td-avatar" style="background:${r.color}">${initials(r.name)}</span><strong>${r.name}</strong></td>
+        <td style="color:var(--text-mid)">${r.career}</td>
+        <td style="color:var(--text-soft);font-size:12px">${r.fac}</td>
+        <td style="text-align:center">${r.ciclo}</td>
+        <td style="color:var(--text-soft);font-size:12px">${r.date}</td>
+        <td><span class="badge-pill ${statusClass[r.status]}">${r.status}</span></td>
+        <td>
+          <button class="action-btn edit" title="Editar"><i class="fas fa-pen"></i></button>
+          <button class="action-btn del" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+        </td>
+      </tr>`;
+  });
+
+  document.getElementById('countI').textContent=total;
+  document.getElementById('pagInfo').textContent=`Página ${currentPage} de ${pages||1} · ${total} registros`;
+
+  const pgBtns=document.getElementById('pagBtns');
+  pgBtns.innerHTML='';
+  for(let p=1;p<=pages;p++){
+    pgBtns.innerHTML+=`<button class="pag-btn${p===currentPage?' active':''}" onclick="goPage(${p})">${p}</button>`;
+  }
+}
+
+function goPage(p){currentPage=p;renderTable();}
+
+// Counter
+function animCount(id,val){
+  const el=document.getElementById(id);let c=0;const s=val/50;
+  const t=setInterval(()=>{c=Math.min(c+s,val);el.textContent=Math.round(c);if(c>=val)clearInterval(t);},20);
+}
+animCount('tot',data.length);
+animCount('act',data.filter(d=>d.status==='Activo').length);
+animCount('pen',data.filter(d=>d.status==='Pendiente').length);
+animCount('baj',data.filter(d=>d.status==='Baja').length);
+
+renderTable();
+</script>
+</body>
+</html>

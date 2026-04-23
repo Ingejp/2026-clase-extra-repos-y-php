@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JP University — Directorio Docente</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root{--navy:#0d1b3e;--navy-mid:#132248;--navy-light:#1a2e5e;--gold:#c9a84c;--gold-light:#e2c170;--gold-pale:#f5e9c8;--cream:#f7f4ee;--white:#ffffff;--text-dark:#1c1c2e;--text-mid:#4a4a6a;--text-soft:#8888aa;--success:#2ecc8f;--danger:#e05c6e;--info:#3fa7d6;--warning:#f0a500;--sidebar-w:270px;--topbar-h:64px;--radius:14px;--shadow:0 4px 24px rgba(13,27,62,.10);--shadow-lg:0 8px 40px rgba(13,27,62,.16);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-dark);display:flex;min-height:100vh;overflow-x:hidden;}
+  /* SIDEBAR */
+  #sidebar{width:var(--sidebar-w);background:var(--navy);min-height:100vh;position:fixed;top:0;left:0;z-index:100;box-shadow:4px 0 32px rgba(0,0,0,.25);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--navy-light) var(--navy);}
+  #sidebar::-webkit-scrollbar{width:4px;}#sidebar::-webkit-scrollbar-thumb{background:var(--navy-light);border-radius:4px;}
+  .sidebar-brand{padding:22px 20px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(201,168,76,.18);}
+  .brand-logo{width:42px;height:42px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:var(--navy);box-shadow:0 4px 12px rgba(201,168,76,.4);}
+  .brand-text strong{display:block;font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--white);}
+  .brand-text span{font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.8px;text-transform:uppercase;}
+  .sidebar-user{padding:16px 20px;display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(255,255,255,.07);}
+  .user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#e8a830);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--navy);}
+  .user-info strong{display:block;font-size:13px;color:var(--white);font-weight:600;}
+  .user-info span{font-size:11px;color:rgba(255,255,255,.4);}
+  .nav-label{padding:18px 20px 6px;font-size:10px;text-transform:uppercase;letter-spacing:1.4px;color:rgba(201,168,76,.55);font-weight:600;}
+  .nav-link{display:flex;align-items:center;gap:11px;padding:10px 20px;color:rgba(255,255,255,.65);text-decoration:none;font-size:13.5px;font-weight:500;cursor:pointer;transition:all .2s;border-left:3px solid transparent;}
+  .nav-link:hover{color:var(--white);background:rgba(255,255,255,.06);border-left-color:rgba(201,168,76,.4);}
+  .nav-link.active{color:var(--gold-light);background:rgba(201,168,76,.12);border-left-color:var(--gold);}
+  .nav-link .icon{width:18px;text-align:center;font-size:14px;}
+  .nav-link .label{flex:1;}
+  .nav-link .arrow{font-size:10px;transition:transform .25s;}
+  .nav-link.open .arrow{transform:rotate(90deg);}
+  .nav-link .badge{background:var(--gold);color:var(--navy);font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;}
+  .submenu{overflow:hidden;max-height:0;transition:max-height .35s ease;background:rgba(0,0,0,.15);}
+  .submenu.open{max-height:400px;}
+  .submenu-link{display:flex;align-items:center;gap:9px;padding:8px 20px 8px 50px;color:rgba(255,255,255,.5);text-decoration:none;font-size:12.5px;cursor:pointer;transition:all .2s;}
+  .submenu-link::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(201,168,76,.4);flex-shrink:0;}
+  .submenu-link:hover,.submenu-link.active{color:var(--gold-light);}
+  .submenu-link.active::before,.submenu-link:hover::before{background:var(--gold);}
+  /* MAIN */
+  #main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;}
+  #topbar{height:var(--topbar-h);background:var(--white);display:flex;align-items:center;justify-content:space-between;padding:0 28px;box-shadow:0 2px 16px rgba(0,0,0,.07);position:sticky;top:0;z-index:50;}
+  .topbar-left{display:flex;align-items:center;gap:14px;}
+  .page-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);}
+  .breadcrumb{font-size:12px;color:var(--text-soft);}
+  .breadcrumb a{color:var(--text-soft);text-decoration:none;}
+  .breadcrumb a:hover{color:var(--gold);}
+  .breadcrumb span{color:var(--gold);font-weight:600;}
+  .topbar-right{display:flex;align-items:center;gap:10px;}
+  .tb-btn{width:38px;height:38px;background:var(--cream);border:none;border-radius:10px;color:var(--text-mid);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;position:relative;transition:all .2s;}
+  .notif-dot{position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--danger);border:2px solid var(--white);}
+  .tb-profile{display:flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;background:var(--cream);border-radius:10px;cursor:pointer;}
+  .tb-profile .avatar{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--navy),var(--navy-light));display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--gold);}
+  .tb-profile span{font-size:13px;font-weight:600;color:var(--text-dark);}
+  /* CONTENT */
+  #content{padding:28px;flex:1;}
+  .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+  .page-header h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--navy);}
+  .page-header p{font-size:13px;color:var(--text-soft);margin-top:3px;}
+  .header-btns{display:flex;gap:10px;}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);border:none;border-radius:10px;padding:10px 20px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(201,168,76,.35);}
+  .btn-gold:hover{transform:translateY(-1px);}
+  .btn-outline-nav{background:var(--white);color:var(--text-mid);border:1px solid rgba(0,0,0,.1);border-radius:10px;padding:10px 16px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
+  .btn-outline-nav:hover{border-color:var(--gold);color:var(--navy);}
+  /* Toggle view */
+  .view-toggle{display:flex;gap:6px;background:var(--white);border-radius:10px;padding:4px;box-shadow:var(--shadow);}
+  .vt-btn{width:32px;height:32px;border:none;border-radius:8px;cursor:pointer;font-size:13px;background:transparent;color:var(--text-soft);transition:all .15s;}
+  .vt-btn.active{background:var(--navy);color:var(--white);}
+  /* Filters */
+  .filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+  .search-wrap{position:relative;}
+  .search-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-soft);font-size:13px;}
+  .filter-bar input{background:var(--white);border:1px solid rgba(0,0,0,.08);border-radius:10px;padding:9px 14px 9px 36px;font-family:inherit;font-size:13px;color:var(--text-dark);outline:none;width:240px;}
+  .filter-bar input:focus{border-color:var(--gold);}
+  .filter-select{background:var(--white);border:1px solid rgba(0,0,0,.08);border-radius:10px;padding:9px 14px;font-family:inherit;font-size:13px;color:var(--text-mid);outline:none;cursor:pointer;}
+  .count-tag{margin-left:auto;font-size:12.5px;color:var(--text-soft);}
+  .count-tag strong{color:var(--navy);}
+  /* Cards view */
+  .docentes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;}
+  .doc-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;transition:transform .2s,box-shadow .2s;animation:fadeUp .35s ease both;cursor:default;}
+  .doc-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+  .dc-header{height:70px;display:flex;align-items:center;justify-content:center;position:relative;}
+  .dc-avatar{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--white);border:3px solid var(--white);box-shadow:0 4px 14px rgba(0,0,0,.18);position:absolute;bottom:-28px;}
+  .dc-body{padding:36px 18px 18px;text-align:center;}
+  .dc-body h3{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+  .dc-body .especial{font-size:12px;color:var(--text-soft);margin-bottom:10px;}
+  .dc-tags{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+  .dc-tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;}
+  .dc-footer{border-top:1px solid rgba(0,0,0,.06);padding:12px 18px;display:flex;justify-content:space-between;align-items:center;}
+  .dc-footer span{font-size:12px;color:var(--text-soft);display:flex;align-items:center;gap:4px;}
+  .dc-footer span i{font-size:11px;}
+  /* Table view hidden by default */
+  .list-view{display:none;}
+  .list-view.active,.grid-view.active{display:block;}
+  .grid-view.active{display:grid;}
+  /* Table */
+  .table-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+  .table-wrap{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;}
+  thead th{text-align:left;padding:12px 16px;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-soft);font-weight:600;border-bottom:1px solid rgba(0,0,0,.07);}
+  tbody tr{transition:background .15s;animation:fadeUp .3s ease both;}
+  tbody tr:hover{background:rgba(201,168,76,.04);}
+  tbody td{padding:13px 16px;font-size:13px;color:var(--text-dark);border-bottom:1px solid rgba(0,0,0,.04);}
+  .badge-pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;}
+  .badge-success{background:rgba(46,204,143,.12);color:var(--success);}
+  .badge-warning{background:rgba(240,165,0,.12);color:var(--warning);}
+  .badge-info{background:rgba(63,167,214,.12);color:var(--info);}
+  .badge-gold{background:rgba(201,168,76,.15);color:var(--gold);}
+  .td-avatar{width:34px;height:34px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--white);margin-right:9px;vertical-align:middle;}
+  .action-btn{width:28px;height:28px;border-radius:7px;border:none;cursor:pointer;font-size:12px;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;margin-right:3px;}
+  .action-btn.edit{background:rgba(63,167,214,.1);color:var(--info);}
+  .action-btn.view{background:rgba(201,168,76,.12);color:var(--gold);}
+  .action-btn:hover{opacity:.75;transform:scale(1.1);}
+  .stars{color:var(--gold);font-size:12px;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  #footer{background:var(--white);border-top:1px solid rgba(0,0,0,.06);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-soft);}
+  #footer strong{color:var(--gold);}
+</style>
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">JP</div>
+    <div class="brand-text"><strong>JP University</strong><span>Academic Suite</span></div>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar">AM</div>
+    <div class="user-info"><strong>Admin Rector</strong><span>Administrador Central</span></div>
+  </div>
+  <nav>
+    <p class="nav-label">Principal</p>
+    <div class="nav-item"><a class="nav-link" href="jp_university_dashboard.html"><i class="icon fas fa-th-large"></i><span class="label">Dashboard</span></a></div>
+    <p class="nav-label">Académico</p>
+    <div class="nav-item">
+      <a class="nav-link" onclick="toggleMenu(this)"><i class="icon fas fa-graduation-cap"></i><span class="label">Gestión Académica</span><i class="arrow fas fa-chevron-right"></i></a>
+      <div class="submenu">
+        <a class="submenu-link" href="#">Planes de Estudio</a>
+        <a class="submenu-link" href="carreras.html">Programas y Carreras</a>
+        <a class="submenu-link" href="#">Pensum Académico</a>
+        <a class="submenu-link" href="#">Equivalencias</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a class="nav-link" onclick="toggleMenu(this)"><i class="icon fas fa-user-graduate"></i><span class="label">Estudiantes</span><span class="badge">18</span><i class="arrow fas fa-chevron-right" style="margin-left:4px"></i></a>
+      <div class="submenu">
+        <a class="submenu-link" href="inscripciones.html">Inscripciones</a>
+        <a class="submenu-link" href="#">Registro Académico</a>
+        <a class="submenu-link" href="#">Historial de Notas</a>
+        <a class="submenu-link" href="#">Becas y Descuentos</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a class="nav-link open active" onclick="toggleMenu(this)"><i class="icon fas fa-chalkboard-teacher"></i><span class="label">Docentes</span><i class="arrow fas fa-chevron-right"></i></a>
+      <div class="submenu open">
+        <a class="submenu-link active" href="docentes.html">Directorio Docente</a>
+        <a class="submenu-link" href="#">Asignación de Cursos</a>
+        <a class="submenu-link" href="#">Evaluación Docente</a>
+        <a class="submenu-link" href="#">Carga Académica</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a class="nav-link" onclick="toggleMenu(this)"><i class="icon fas fa-calendar-alt"></i><span class="label">Horarios y Aulas</span><i class="arrow fas fa-chevron-right"></i></a>
+      <div class="submenu">
+        <a class="submenu-link" href="#">Asignación de Aulas</a>
+        <a class="submenu-link" href="#">Calendario Académico</a>
+        <a class="submenu-link" href="#">Control de Asistencia</a>
+      </div>
+    </div>
+    <p class="nav-label">Administración</p>
+    <div class="nav-item">
+      <a class="nav-link" onclick="toggleMenu(this)"><i class="icon fas fa-file-invoice-dollar"></i><span class="label">Finanzas</span><i class="arrow fas fa-chevron-right"></i></a>
+      <div class="submenu">
+        <a class="submenu-link" href="#">Pagos y Aranceles</a>
+        <a class="submenu-link" href="#">Presupuesto Anual</a>
+        <a class="submenu-link" href="#">Cuentas por Cobrar</a>
+      </div>
+    </div>
+    <p class="nav-label">Sistema</p>
+    <div class="nav-item"><a class="nav-link" href="#"><i class="icon fas fa-cog"></i><span class="label">Configuración</span></a></div>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<div id="main">
+  <header id="topbar">
+    <div class="topbar-left">
+      <div class="page-title">Directorio Docente</div>
+      <div class="breadcrumb">
+        <a href="jp_university_dashboard.html">Inicio</a> / Docentes / <span>Directorio Docente</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="view-toggle">
+        <button class="vt-btn active" id="btnGrid" onclick="setView('grid')" title="Cuadrícula"><i class="fas fa-th-large"></i></button>
+        <button class="vt-btn" id="btnList" onclick="setView('list')" title="Lista"><i class="fas fa-list"></i></button>
+      </div>
+      <button class="tb-btn"><i class="fas fa-bell"></i><span class="notif-dot"></span></button>
+      <div class="tb-profile">
+        <div class="avatar"><i class="fas fa-user-tie"></i></div>
+        <span>Rector</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="content">
+    <div class="page-header">
+      <div>
+        <h1>Planta Docente 2025-I</h1>
+        <p>JP University · 5 Facultades · 347 docentes activos</p>
+      </div>
+      <div class="header-btns">
+        <button class="btn-outline-nav"><i class="fas fa-download" style="margin-right:5px"></i>Exportar</button>
+        <button class="btn-gold"><i class="fas fa-plus" style="margin-right:6px"></i>Nuevo Docente</button>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Buscar docente o especialidad..." id="searchD" oninput="renderDocentes()">
+      </div>
+      <select class="filter-select" id="facD" onchange="renderDocentes()">
+        <option value="">Todas las Facultades</option>
+        <option>Ingeniería</option><option>Ciencias Económicas</option>
+        <option>Ciencias Jurídicas</option><option>Ciencias de la Salud</option><option>Humanidades</option>
+      </select>
+      <select class="filter-select" id="catD" onchange="renderDocentes()">
+        <option value="">Todas las Categorías</option>
+        <option>Titular</option><option>Asociado</option><option>Adjunto</option><option>Invitado</option>
+      </select>
+      <span class="count-tag">Mostrando <strong id="countD">0</strong> docentes</span>
+    </div>
+
+    <!-- Grid view -->
+    <div class="docentes-grid grid-view active" id="docentesGrid"></div>
+    <!-- List view -->
+    <div class="list-view" id="docentesList">
+      <div class="table-card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Docente</th><th>Facultad</th><th>Especialidad</th><th>Categoría</th><th>Cursos</th><th>Evaluación</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody id="tableD"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer id="footer">
+    <span>© 2025 <strong>JP University</strong> — Directorio Docente</span>
+    <a href="jp_university_dashboard.html" style="color:var(--gold);font-weight:600;text-decoration:none;font-size:12px;"><i class="fas fa-arrow-left" style="margin-right:5px"></i>Volver al Dashboard</a>
+  </footer>
+</div>
+
+<script>
+function toggleMenu(el){
+  const sub=el.nextElementSibling;
+  const isOpen=sub.classList.contains('open');
+  document.querySelectorAll('.submenu').forEach(s=>s.classList.remove('open'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('open'));
+  if(!isOpen){sub.classList.add('open');el.classList.add('open');}
+}
+
+let currentView='grid';
+function setView(v){
+  currentView=v;
+  document.getElementById('btnGrid').classList.toggle('active',v==='grid');
+  document.getElementById('btnList').classList.toggle('active',v==='list');
+  document.getElementById('docentesGrid').classList.toggle('active',v==='grid');
+  document.getElementById('docentesList').classList.toggle('active',v==='list');
+}
+
+const facColors={
+  'Ingeniería':       {bg:'#3fa7d6',light:'rgba(63,167,214,.12)',badge:'badge-info'},
+  'Ciencias Económicas':{bg:'#c9a84c',light:'rgba(201,168,76,.15)',badge:'badge-gold'},
+  'Ciencias Jurídicas':{bg:'#2ecc8f',light:'rgba(46,204,143,.12)',badge:'badge-success'},
+  'Ciencias de la Salud':{bg:'#e05c6e',light:'rgba(224,92,110,.12)',badge:'badge-danger'},
+  'Humanidades':      {bg:'#9b59b6',light:'rgba(155,89,182,.12)',badge:'badge-info'},
+};
+const catStyle={Titular:'badge-gold',Asociado:'badge-success',Adjunto:'badge-info',Invitado:'badge-warning'};
+
+const nombres=['Dr. Arturo Vásquez','Dra. Carmen Solís','Dr. Ricardo Mendoza','Dra. Laura Pineda','Dr. Fernando Rojas','Dra. Beatriz Alonso','Dr. Héctor Navarro','Dra. Silvia Paredes','Dr. Gonzalo Ríos','Dra. Miriam Fuentes','Dr. Jorge Castañeda','Dra. Natalia Serrano','Dr. Raúl Espinoza','Dra. Patricia Montoya','Dr. Antonio Guerrero','Dra. Elena Varela','Dr. Marcos Ibáñez','Dra. Claudia Mora','Dr. Óscar Medrano','Dra. Roxana Zelaya','Dr. Ernesto Pinto','Dra. Gloria Tapia','Dr. Iván Herrera','Dra. Renata Núñez'];
+const specs={
+  'Ingeniería':['Sistemas Distribuidos','Redes y Telecomunicaciones','Inteligencia Artificial','Bases de Datos','Ingeniería de Software'],
+  'Ciencias Económicas':['Finanzas Corporativas','Contabilidad Internacional','Marketing Digital','Economía Global','Gestión Empresarial'],
+  'Ciencias Jurídicas':['Derecho Constitucional','Derecho Penal','Derecho Laboral','Derecho Internacional','Notariado'],
+  'Ciencias de la Salud':['Medicina Interna','Cirugía General','Salud Pública','Nutrición Clínica','Enfermería Avanzada'],
+  'Humanidades':['Psicología Clínica','Comunicación Organizacional','Pedagogía','Sociología','Filosofía'],
+};
+const cats=['Titular','Titular','Asociado','Asociado','Adjunto','Invitado'];
+const facs=Object.keys(facColors);
+function rnd(a){return a[Math.floor(Math.random()*a.length)];}
+function stars(r){let s='';for(let i=0;i<5;i++)s+=i<Math.round(r)?'★':'☆';return s;}
+
+const docentes=nombres.map((n,i)=>{
+  const fac=facs[i%facs.length];
+  return{id:`DOC-${(100+i).toString()}`,name:n,fac,spec:rnd(specs[fac]),cat:rnd(cats),cursos:Math.floor(Math.random()*5+2),eval:(3.5+Math.random()*1.5).toFixed(1),status:Math.random()>.15?'Activo':'Licencia'};
+});
+
+function initials(n){return n.replace(/^(Dr|Dra)\.\s*/,'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+
+function getFiltered(){
+  const q=document.getElementById('searchD').value.toLowerCase();
+  const fac=document.getElementById('facD').value;
+  const cat=document.getElementById('catD').value;
+  return docentes.filter(d=>(!q||(d.name+d.spec).toLowerCase().includes(q))&&(!fac||d.fac===fac)&&(!cat||d.cat===cat));
+}
+
+function renderDocentes(){
+  const filtered=getFiltered();
+  document.getElementById('countD').textContent=filtered.length;
+  // Grid
+  const grid=document.getElementById('docentesGrid');
+  grid.innerHTML='';
+  filtered.forEach((d,i)=>{
+    const fc=facColors[d.fac];
+    const delay=(i%8)*.05;
+    grid.innerHTML+=`
+      <div class="doc-card" style="animation-delay:${delay}s">
+        <div class="dc-header" style="background:linear-gradient(135deg,${fc.bg}cc,${fc.bg}66)">
+          <div class="dc-avatar" style="background:${fc.bg}">${initials(d.name)}</div>
+        </div>
+        <div class="dc-body">
+          <h3>${d.name}</h3>
+          <p class="especial">${d.spec}</p>
+          <div class="dc-tags">
+            <span class="dc-tag ${fc.badge}" style="background:${fc.light};color:${fc.bg}">${d.fac}</span>
+            <span class="dc-tag ${catStyle[d.cat]}">${d.cat}</span>
+          </div>
+        </div>
+        <div class="dc-footer">
+          <span><i class="fas fa-book-open"></i> ${d.cursos} cursos</span>
+          <span class="stars">${stars(parseFloat(d.eval))} <span style="color:var(--text-soft);font-size:11px">${d.eval}</span></span>
+        </div>
+      </div>`;
+  });
+  // Table
+  const tbody=document.getElementById('tableD');
+  tbody.innerHTML='';
+  filtered.forEach((d,i)=>{
+    const fc=facColors[d.fac];
+    tbody.innerHTML+=`
+      <tr style="animation-delay:${i*.03}s">
+        <td style="color:var(--text-soft);font-size:12px">${d.id}</td>
+        <td><span class="td-avatar" style="background:${fc.bg}">${initials(d.name)}</span><strong>${d.name}</strong></td>
+        <td style="font-size:12px;color:var(--text-soft)">${d.fac}</td>
+        <td style="color:var(--text-mid)">${d.spec}</td>
+        <td><span class="badge-pill ${catStyle[d.cat]}">${d.cat}</span></td>
+        <td style="text-align:center;font-weight:700">${d.cursos}</td>
+        <td><span class="stars">${stars(parseFloat(d.eval))} ${d.eval}</span></td>
+        <td><span class="badge-pill ${d.status==='Activo'?'badge-success':'badge-warning'}">${d.status}</span></td>
+        <td>
+          <button class="action-btn view" title="Ver perfil"><i class="fas fa-eye"></i></button>
+          <button class="action-btn edit" title="Editar"><i class="fas fa-pen"></i></button>
+        </td>
+      </tr>`;
+  });
+}
+
+renderDocentes();
+</script>
+</body>
+</html>

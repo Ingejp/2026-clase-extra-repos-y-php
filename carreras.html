@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JP University — Programas y Carreras</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --navy:#0d1b3e; --navy-mid:#132248; --navy-light:#1a2e5e;
+    --gold:#c9a84c; --gold-light:#e2c170; --gold-pale:#f5e9c8;
+    --cream:#f7f4ee; --white:#ffffff;
+    --text-dark:#1c1c2e; --text-mid:#4a4a6a; --text-soft:#8888aa;
+    --success:#2ecc8f; --danger:#e05c6e; --info:#3fa7d6; --warning:#f0a500;
+    --sidebar-w:270px; --topbar-h:64px; --radius:14px;
+    --shadow:0 4px 24px rgba(13,27,62,.10); --shadow-lg:0 8px 40px rgba(13,27,62,.16);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-dark);display:flex;min-height:100vh;overflow-x:hidden;}
+
+  /* SIDEBAR */
+  #sidebar{width:var(--sidebar-w);background:var(--navy);min-height:100vh;position:fixed;top:0;left:0;display:flex;flex-direction:column;z-index:100;box-shadow:4px 0 32px rgba(0,0,0,.25);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--navy-light) var(--navy);}
+  #sidebar::-webkit-scrollbar{width:4px;}
+  #sidebar::-webkit-scrollbar-thumb{background:var(--navy-light);border-radius:4px;}
+  .sidebar-brand{padding:22px 20px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(201,168,76,.18);}
+  .brand-logo{width:42px;height:42px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:var(--navy);flex-shrink:0;box-shadow:0 4px 12px rgba(201,168,76,.4);}
+  .brand-text{color:var(--white);}
+  .brand-text strong{display:block;font-family:'Playfair Display',serif;font-size:15px;font-weight:700;}
+  .brand-text span{font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.8px;text-transform:uppercase;}
+  .sidebar-user{padding:16px 20px;display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(255,255,255,.07);}
+  .user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#e8a830);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--navy);flex-shrink:0;}
+  .user-info strong{display:block;font-size:13px;color:var(--white);font-weight:600;}
+  .user-info span{font-size:11px;color:rgba(255,255,255,.4);}
+  .nav-label{padding:18px 20px 6px;font-size:10px;text-transform:uppercase;letter-spacing:1.4px;color:rgba(201,168,76,.55);font-weight:600;}
+  .nav-item{position:relative;}
+  .nav-link{display:flex;align-items:center;gap:11px;padding:10px 20px;color:rgba(255,255,255,.65);text-decoration:none;font-size:13.5px;font-weight:500;cursor:pointer;transition:all .2s;border-left:3px solid transparent;user-select:none;}
+  .nav-link:hover{color:var(--white);background:rgba(255,255,255,.06);border-left-color:rgba(201,168,76,.4);}
+  .nav-link.active{color:var(--gold-light);background:rgba(201,168,76,.12);border-left-color:var(--gold);}
+  .nav-link .icon{width:18px;text-align:center;font-size:14px;flex-shrink:0;}
+  .nav-link .label{flex:1;}
+  .nav-link .arrow{font-size:10px;transition:transform .25s;}
+  .nav-link.open .arrow{transform:rotate(90deg);}
+  .nav-link .badge{background:var(--gold);color:var(--navy);font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;min-width:20px;text-align:center;}
+  .submenu{overflow:hidden;max-height:0;transition:max-height .35s ease;background:rgba(0,0,0,.15);}
+  .submenu.open{max-height:400px;}
+  .submenu-link{display:flex;align-items:center;gap:9px;padding:8px 20px 8px 50px;color:rgba(255,255,255,.5);text-decoration:none;font-size:12.5px;cursor:pointer;transition:all .2s;}
+  .submenu-link::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(201,168,76,.4);flex-shrink:0;transition:background .2s;}
+  .submenu-link:hover{color:var(--gold-light);}
+  .submenu-link:hover::before,.submenu-link.active::before{background:var(--gold);}
+  .submenu-link.active{color:var(--gold);}
+
+  /* MAIN */
+  #main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+  #topbar{height:var(--topbar-h);background:var(--white);display:flex;align-items:center;justify-content:space-between;padding:0 28px;box-shadow:0 2px 16px rgba(0,0,0,.07);position:sticky;top:0;z-index:50;gap:16px;}
+  .topbar-left{display:flex;align-items:center;gap:14px;}
+  .page-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);}
+  .breadcrumb{font-size:12px;color:var(--text-soft);}
+  .breadcrumb a{color:var(--text-soft);text-decoration:none;}
+  .breadcrumb a:hover{color:var(--gold);}
+  .breadcrumb span{color:var(--gold);font-weight:600;}
+  .topbar-right{display:flex;align-items:center;gap:10px;}
+  .tb-btn{width:38px;height:38px;background:var(--cream);border:none;border-radius:10px;color:var(--text-mid);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;position:relative;transition:all .2s;}
+  .tb-btn:hover{background:var(--gold-pale);color:var(--navy);}
+  .notif-dot{position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--danger);border:2px solid var(--white);}
+  .tb-profile{display:flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;background:var(--cream);border-radius:10px;cursor:pointer;transition:background .2s;}
+  .tb-profile:hover{background:var(--gold-pale);}
+  .tb-profile .avatar{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--navy),var(--navy-light));display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--gold);}
+  .tb-profile span{font-size:13px;font-weight:600;color:var(--text-dark);}
+
+  /* CONTENT */
+  #content{padding:28px;flex:1;}
+  .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+  .page-header h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--navy);}
+  .page-header p{font-size:13px;color:var(--text-soft);margin-top:3px;}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);border:none;border-radius:10px;padding:10px 20px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(201,168,76,.35);}
+  .btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,.5);}
+
+  /* Filter bar */
+  .filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap;}
+  .filter-bar input{background:var(--white);border:1px solid rgba(0,0,0,.08);border-radius:10px;padding:9px 14px 9px 36px;font-family:inherit;font-size:13px;color:var(--text-dark);outline:none;width:260px;transition:border-color .2s;}
+  .filter-bar input:focus{border-color:var(--gold);}
+  .search-wrap{position:relative;}
+  .search-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-soft);font-size:13px;}
+  .filter-select{background:var(--white);border:1px solid rgba(0,0,0,.08);border-radius:10px;padding:9px 14px;font-family:inherit;font-size:13px;color:var(--text-mid);outline:none;cursor:pointer;}
+  .filter-select:focus{border-color:var(--gold);}
+  .count-tag{margin-left:auto;font-size:12.5px;color:var(--text-soft);}
+  .count-tag strong{color:var(--navy);font-weight:700;}
+
+  /* Carreras grid */
+  .carreras-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;}
+  .carrera-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;transition:transform .2s,box-shadow .2s;animation:fadeUp .4s ease both;}
+  .carrera-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+  .cc-top{padding:18px 20px 14px;border-bottom:1px solid rgba(0,0,0,.05);display:flex;align-items:flex-start;gap:14px;}
+  .cc-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .cc-info{flex:1;}
+  .cc-info h3{font-family:'Playfair Display',serif;font-size:14.5px;font-weight:700;color:var(--navy);margin-bottom:3px;line-height:1.3;}
+  .cc-info .fac{font-size:11.5px;color:var(--text-soft);font-weight:500;}
+  .cc-body{padding:14px 20px;}
+  .cc-meta{display:flex;gap:16px;margin-bottom:12px;}
+  .cc-meta-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-mid);}
+  .cc-meta-item i{font-size:11px;color:var(--text-soft);}
+  .cc-desc{font-size:12.5px;color:var(--text-mid);line-height:1.5;margin-bottom:12px;}
+  .cc-footer{display:flex;align-items:center;justify-content:space-between;}
+  .badge-pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;}
+  .badge-success{background:rgba(46,204,143,.12);color:var(--success);}
+  .badge-warning{background:rgba(240,165,0,.12);color:var(--warning);}
+  .badge-info{background:rgba(63,167,214,.12);color:var(--info);}
+  .cc-link{font-size:12px;font-weight:600;color:var(--gold);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap .15s;}
+  .cc-link:hover{gap:7px;}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+  #footer{background:var(--white);border-top:1px solid rgba(0,0,0,.06);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-soft);}
+  #footer strong{color:var(--gold);}
+
+  /* Sidebar submenu JS */
+  .nav-link,.submenu-link{cursor:pointer;}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">JP</div>
+    <div class="brand-text"><strong>JP University</strong><span>Academic Suite</span></div>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar">AM</div>
+    <div class="user-info"><strong>Admin Rector</strong><span>Administrador Central</span></div>
+  </div>
+  <nav>
+    <p class="nav-label">Principal</p>
+    <div class="nav-item">
+      <a class="nav-link" href="jp_university_dashboard.html">
+        <i class="icon fas fa-th-large"></i><span class="label">Dashboard</span>
+      </a>
+    </div>
+    <p class="nav-label">Académico</p>
+    <div class="nav-item">
+      <a class="nav-link open active" onclick="toggleMenu(this)">
+        <i class="icon fas fa-graduation-cap"></i><span class="label">Gestión Académica</span>
+        <i class="arrow fas fa-chevron-right"></i>
+      </a>
+      <div class="submenu open">
+        <a class="submenu-link" href="#">Planes de Estudio</a>
+        <a class="submenu-link active" href="carreras.html">Programas y Carreras</a>
+        <a class="submenu-link" href="#">Pensum Académico</a>
+        <a class="submenu-link" href="#">Equivalencias</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a class="nav-link" onclick="toggleMenu(this)">
+        <i class="icon fas fa-user-graduate"></i><span class="label">Estudiantes</span>
+        <span class="badge">18</span><i class="arrow fas fa-chevron-right" style="margin-left:4px"></i>
+      </a>
+      <div class="submenu">
+        <a class="submenu-link" href="inscripciones.html">Inscripciones</a>
+        <a class="submenu-link" href="#">Registro Académico</a>
+        <a class="submenu-link" href="#">Historial de Notas</a>
+        <a class="submenu-link" href="#">Becas y Descuentos</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a class="nav-link" onclick="toggleMenu(this)">
+        <i class="icon fas fa-chalkboard-teacher"></i><span class="label">Docentes</span>
+        <i class="arrow fas fa-chevron-right"></i>
+      </a>
+      <div class="submenu">
+        <a class="submenu-link" href="docentes.html">Directorio Docente</a>
+        <a class="submenu-link" href="#">Asignación de Cursos</a>
+        <a class="submenu-link" href="#">Evaluación Docente</a>
+        <a class="submenu-link" href="#">Carga Académica</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a class="nav-link" onclick="toggleMenu(this)">
+        <i class="icon fas fa-calendar-alt"></i><span class="label">Horarios y Aulas</span>
+        <i class="arrow fas fa-chevron-right"></i>
+      </a>
+      <div class="submenu">
+        <a class="submenu-link" href="#">Asignación de Aulas</a>
+        <a class="submenu-link" href="#">Calendario Académico</a>
+        <a class="submenu-link" href="#">Control de Asistencia</a>
+      </div>
+    </div>
+    <p class="nav-label">Administración</p>
+    <div class="nav-item">
+      <a class="nav-link" onclick="toggleMenu(this)">
+        <i class="icon fas fa-file-invoice-dollar"></i><span class="label">Finanzas</span>
+        <i class="arrow fas fa-chevron-right"></i>
+      </a>
+      <div class="submenu">
+        <a class="submenu-link" href="#">Pagos y Aranceles</a>
+        <a class="submenu-link" href="#">Presupuesto Anual</a>
+        <a class="submenu-link" href="#">Cuentas por Cobrar</a>
+        <a class="submenu-link" href="#">Reportes Financieros</a>
+      </div>
+    </div>
+    <p class="nav-label">Sistema</p>
+    <div class="nav-item"><a class="nav-link" href="#"><i class="icon fas fa-cog"></i><span class="label">Configuración</span></a></div>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<div id="main">
+  <header id="topbar">
+    <div class="topbar-left">
+      <div class="page-title">Programas y Carreras</div>
+      <div class="breadcrumb">
+        <a href="jp_university_dashboard.html">Inicio</a> / Gestión Académica / <span>Programas y Carreras</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="tb-btn"><i class="fas fa-bell"></i><span class="notif-dot"></span></button>
+      <div class="tb-profile">
+        <div class="avatar"><i class="fas fa-user-tie"></i></div>
+        <span>Rector</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="content">
+    <div class="page-header">
+      <div>
+        <h1>Catálogo de Programas Académicos</h1>
+        <p>Ciclo 2025-I · 5 Facultades · 18 carreras activas</p>
+      </div>
+      <button class="btn-gold"><i class="fas fa-plus" style="margin-right:6px"></i>Nueva Carrera</button>
+    </div>
+
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Buscar carrera o facultad..." id="searchInput" oninput="filterCards()">
+      </div>
+      <select class="filter-select" id="facFilter" onchange="filterCards()">
+        <option value="">Todas las Facultades</option>
+        <option>Ingeniería</option>
+        <option>Ciencias Económicas</option>
+        <option>Ciencias Jurídicas</option>
+        <option>Ciencias de la Salud</option>
+        <option>Humanidades</option>
+      </select>
+      <select class="filter-select" id="modalFilter" onchange="filterCards()">
+        <option value="">Todas las Modalidades</option>
+        <option>Presencial</option>
+        <option>Virtual</option>
+        <option>Semipresencial</option>
+      </select>
+      <span class="count-tag">Mostrando <strong id="countDisplay">18</strong> carreras</span>
+    </div>
+
+    <div class="carreras-grid" id="carrerasGrid"></div>
+  </main>
+
+  <footer id="footer">
+    <span>© 2025 <strong>JP University</strong> — Gestión Académica</span>
+    <a href="jp_university_dashboard.html" style="color:var(--gold);font-weight:600;text-decoration:none;font-size:12px;"><i class="fas fa-arrow-left" style="margin-right:5px"></i>Volver al Dashboard</a>
+  </footer>
+</div>
+
+<script>
+function toggleMenu(el){
+  const sub=el.nextElementSibling;
+  const isOpen=sub.classList.contains('open');
+  document.querySelectorAll('.submenu').forEach(s=>s.classList.remove('open'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('open'));
+  if(!isOpen){sub.classList.add('open');el.classList.add('open');}
+}
+
+const facultyColors = {
+  'Ingeniería':       { bg:'rgba(63,167,214,.12)',  color:'#3fa7d6',  icon:'fa-microchip' },
+  'Ciencias Económicas':{ bg:'rgba(201,168,76,.15)', color:'#c9a84c',  icon:'fa-chart-line' },
+  'Ciencias Jurídicas':{ bg:'rgba(46,204,143,.12)', color:'#2ecc8f',  icon:'fa-balance-scale' },
+  'Ciencias de la Salud':{ bg:'rgba(224,92,110,.12)',color:'#e05c6e',  icon:'fa-heartbeat' },
+  'Humanidades':      { bg:'rgba(155,89,182,.12)',  color:'#9b59b6',  icon:'fa-book' },
+};
+
+const carreras = [
+  {name:'Ingeniería en Sistemas',fac:'Ingeniería',dur:'5 años',mod:'Presencial',est:420,desc:'Formación integral en desarrollo de software, redes y arquitectura de sistemas modernos.',status:'Activo'},
+  {name:'Ingeniería Industrial',fac:'Ingeniería',dur:'5 años',mod:'Presencial',est:380,desc:'Optimización de procesos productivos, logística y gestión de operaciones industriales.',status:'Activo'},
+  {name:'Ingeniería Civil',fac:'Ingeniería',dur:'5 años',mod:'Presencial',est:310,desc:'Diseño, construcción y supervisión de infraestructura y obras civiles.',status:'Activo'},
+  {name:'Ingeniería Mecatrónica',fac:'Ingeniería',dur:'5 años',mod:'Semipresencial',est:180,desc:'Integración de mecánica, electrónica e informática para sistemas automatizados.',status:'Activo'},
+  {name:'Administración de Empresas',fac:'Ciencias Económicas',dur:'4 años',mod:'Presencial',est:510,desc:'Gestión empresarial, liderazgo organizacional y toma de decisiones estratégicas.',status:'Activo'},
+  {name:'Contaduría Pública',fac:'Ciencias Económicas',dur:'4 años',mod:'Presencial',est:390,desc:'Análisis financiero, auditoría y gestión contable en entornos empresariales.',status:'Activo'},
+  {name:'Comercio Internacional',fac:'Ciencias Económicas',dur:'4 años',mod:'Virtual',est:260,desc:'Negociación, exportaciones, aduanas y marcos regulatorios del comercio global.',status:'Activo'},
+  {name:'Mercadotecnia Digital',fac:'Ciencias Económicas',dur:'4 años',mod:'Virtual',est:215,desc:'Estrategias de marketing digital, analytics y comunicación de marca.',status:'Nuevo'},
+  {name:'Derecho',fac:'Ciencias Jurídicas',dur:'5 años',mod:'Presencial',est:470,desc:'Formación jurídica en derecho civil, penal, constitucional y derecho internacional.',status:'Activo'},
+  {name:'Notariado y Registros',fac:'Ciencias Jurídicas',dur:'4 años',mod:'Presencial',est:230,desc:'Derecho notarial, registral e instrumentos públicos nacionales e internacionales.',status:'Activo'},
+  {name:'Derecho Internacional',fac:'Ciencias Jurídicas',dur:'5 años',mod:'Semipresencial',est:120,desc:'Tratados, organismos internacionales y resolución de conflictos transfronterizos.',status:'Nuevo'},
+  {name:'Medicina y Cirugía',fac:'Ciencias de la Salud',dur:'6 años',mod:'Presencial',est:540,desc:'Formación médica completa con énfasis en diagnóstico, tratamiento y prevención.',status:'Activo'},
+  {name:'Odontología',fac:'Ciencias de la Salud',dur:'5 años',mod:'Presencial',est:210,desc:'Salud bucal integral, ortodoncia, implantología y cirugía maxilofacial.',status:'Activo'},
+  {name:'Enfermería',fac:'Ciencias de la Salud',dur:'4 años',mod:'Presencial',est:280,desc:'Cuidados clínicos, atención primaria y gestión de servicios de enfermería.',status:'Activo'},
+  {name:'Nutrición y Dietética',fac:'Ciencias de la Salud',dur:'4 años',mod:'Semipresencial',est:150,desc:'Salud nutricional, dietoterapia y formulación de planes alimenticios clínicos.',status:'Activo'},
+  {name:'Psicología',fac:'Humanidades',dur:'5 años',mod:'Presencial',est:320,desc:'Psicología clínica, organizacional y educativa con base en investigación empírica.',status:'Activo'},
+  {name:'Comunicación Social',fac:'Humanidades',dur:'4 años',mod:'Presencial',est:270,desc:'Periodismo, relaciones públicas, producción audiovisual y comunicación corporativa.',status:'Activo'},
+  {name:'Educación y Pedagogía',fac:'Humanidades',dur:'4 años',mod:'Virtual',est:195,desc:'Didáctica, currículum, tecnología educativa y gestión de instituciones escolares.',status:'Activo'},
+];
+
+function buildCards(list){
+  const grid=document.getElementById('carrerasGrid');
+  grid.innerHTML='';
+  list.forEach((c,i)=>{
+    const f=facultyColors[c.fac];
+    const statusClass=c.status==='Nuevo'?'badge-info':'badge-success';
+    const delay=(i%6)*0.06;
+    grid.innerHTML+=`
+      <div class="carrera-card" style="animation-delay:${delay}s" data-fac="${c.fac}" data-mod="${c.mod}" data-name="${c.name.toLowerCase()} ${c.fac.toLowerCase()}">
+        <div class="cc-top">
+          <div class="cc-icon" style="background:${f.bg};color:${f.color}"><i class="fas ${f.icon}"></i></div>
+          <div class="cc-info">
+            <h3>${c.name}</h3>
+            <span class="fac"><i class="fas fa-building" style="margin-right:4px;font-size:10px"></i>${c.fac}</span>
+          </div>
+        </div>
+        <div class="cc-body">
+          <div class="cc-meta">
+            <div class="cc-meta-item"><i class="fas fa-clock"></i>${c.dur}</div>
+            <div class="cc-meta-item"><i class="fas fa-laptop"></i>${c.mod}</div>
+            <div class="cc-meta-item"><i class="fas fa-users"></i>${c.est} est.</div>
+          </div>
+          <p class="cc-desc">${c.desc}</p>
+          <div class="cc-footer">
+            <span class="badge-pill ${statusClass}">${c.status}</span>
+            <a class="cc-link" href="#">Ver detalle <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>`;
+  });
+  document.getElementById('countDisplay').textContent=list.length;
+}
+
+function filterCards(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const fac=document.getElementById('facFilter').value;
+  const mod=document.getElementById('modalFilter').value;
+  const filtered=carreras.filter(c=>{
+    const matchQ=!q||(c.name+' '+c.fac).toLowerCase().includes(q);
+    const matchF=!fac||c.fac===fac;
+    const matchM=!mod||c.mod===mod;
+    return matchQ&&matchF&&matchM;
+  });
+  buildCards(filtered);
+}
+
+buildCards(carreras);
+</script>
+</body>
+</html>
